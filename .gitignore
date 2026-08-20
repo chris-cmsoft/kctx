@@ -2,3 +2,4 @@ bin
 cover.out
 # go build in the repo root drops the binary here
 /kctx
+dist

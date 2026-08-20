@@ -5,6 +5,29 @@ kubeconfig used by other terminal windows.
 
 ## Install
 
+### Download a binary
+
+Every release attaches a binary per platform, so no Go toolchain is needed:
+
+```console
+curl -fsSL -o kctx https://github.com/chris-cmsoft/kctx/releases/latest/download/kctx_darwin_arm64
+chmod +x kctx
+mv kctx /usr/local/bin/kctx
+```
+
+Swap `darwin_arm64` for `darwin_amd64`, `linux_amd64` or `linux_arm64`. Each
+release also ships `checksums.txt`:
+
+```console
+sha256sum -c checksums.txt --ignore-missing
+```
+
+If you download through a browser instead of `curl`, macOS quarantines the file
+and refuses to run it. Clear the flag with
+`xattr -d com.apple.quarantine kctx`.
+
+### With Go
+
 ```console
 go install github.com/chris-cmsoft/kctx@latest
 ```
@@ -14,6 +37,8 @@ Or build locally:
 ```console
 make build
 ```
+
+Cross compile every released target into `dist/` with `make dist`.
 
 ## Usage
 
