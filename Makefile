@@ -1,10 +1,12 @@
 BIN_DIR := bin
+VERSION ?= $(shell git describe --tags --dirty=+dirty --always 2>/dev/null || echo dev)
+LDFLAGS := -s -w -X main.version=$(VERSION)
 
 .PHONY: build dist install test fmt clean
 
 build:
 	@mkdir -p $(BIN_DIR)
-	go build -o $(BIN_DIR)/kctx .
+	go build -trimpath -ldflags "$(LDFLAGS)" -o $(BIN_DIR)/kctx .
 
 # Same targets the release workflow publishes.
 dist:
@@ -13,11 +15,11 @@ dist:
 		goos="$${target%/*}"; goarch="$${target#*/}"; \
 		echo "building $$goos/$$goarch"; \
 		CGO_ENABLED=0 GOOS="$$goos" GOARCH="$$goarch" go build \
-			-trimpath -ldflags "-s -w" -o "dist/kctx_$${goos}_$${goarch}" . || exit 1; \
+			-trimpath -ldflags "$(LDFLAGS)" -o "dist/kctx_$${goos}_$${goarch}" . || exit 1; \
 	done
 
 install:
-	go install .
+	go install -trimpath -ldflags "$(LDFLAGS)" .
 
 test:
 	go test ./...

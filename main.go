@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"errors"
 	"flag"
 	"fmt"
@@ -16,7 +17,8 @@ const usage = `usage: kctx [--kubeconfig path] [--limit n] [context]
 
 Flags:
       --kubeconfig string   Path to kubeconfig file
-      --limit int           Maximum contexts to show (default 9)`
+      --limit int           Maximum contexts to show (default 9)
+      --version             Show the running and latest released version`
 
 var (
 	errUsage = errors.New(usage)
@@ -75,6 +77,10 @@ func execute(
 	selector contextSelector,
 	shell shellRunner,
 ) error {
+	if len(args) == 1 && (args[0] == "--version" || args[0] == "-version") {
+		return reportVersion(context.Background(), out)
+	}
+
 	if len(args) > 0 && args[0] == "completion" {
 		if len(args) != 2 || args[1] != "zsh" {
 			return errors.New("usage: kctx completion zsh")

@@ -29,6 +29,7 @@ jobs:
       - name: Build binaries
         env:
           CGO_ENABLED: "0"
+          TAG: ${{ github.ref_name }}
         run: |
           mkdir -p dist
           for target in darwin/arm64 darwin/amd64 linux/amd64 linux/arm64; do
@@ -37,7 +38,7 @@ jobs:
             echo "building $goos/$goarch"
             GOOS="$goos" GOARCH="$goarch" go build \
               -trimpath \
-              -ldflags "-s -w" \
+              -ldflags "-s -w -X main.version=$TAG" \
               -o "dist/kctx_${goos}_${goarch}" .
           done
 
